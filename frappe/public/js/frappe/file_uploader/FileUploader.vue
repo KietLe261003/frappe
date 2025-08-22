@@ -666,7 +666,9 @@ function upload_file(file, i) {
 		if (file.file_url) {
 			form_data.append("file_url", file.file_url);
 		}
-
+		if (file.file_size) {
+			form_data.append("file_size", file.file_size);
+		}
 		if (file.file_name) {
 			form_data.append("file_name", file.file_name);
 		}
@@ -760,6 +762,7 @@ watch(
 defineExpose({
 	files,
 	add_files,
+	upload_file,
 	upload_files,
 	toggle_all_private,
 	wrapper_ready,
