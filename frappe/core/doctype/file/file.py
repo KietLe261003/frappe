@@ -32,7 +32,12 @@ from .utils import *
 
 exclude_from_linked_with = True
 ImageFile.LOAD_TRUNCATED_IMAGES = True
+<<<<<<< HEAD
 URL_PREFIXES = ("http://", "https://")
+=======
+URL_PREFIXES = ("http://", "https://", "/api/method/drive.api.files.get_file_content")
+FILE_ENCODING_OPTIONS = ("utf-8-sig", "utf-8", "windows-1250", "windows-1252")
+>>>>>>> adc477f255 (feat: tweak to allow drive links)
 
 
 class File(Document):
@@ -212,8 +217,8 @@ class File(Document):
 		if self.is_remote_file or not self.file_url:
 			return
 
-		if not self.file_url.startswith(("/files/", "/private/files/")):
-			# Probably an invalid URL since it doesn't start with http either
+		if not self.file_url.startswith(("/files/", "/private/files/",  "/api/method/drive.api.files.get_file_content")):
+			# Probably an invalid URL since it doesn't start with http and isn't a Drive URL either
 			frappe.throw(
 				_("URL must start with http:// or https://"),
 				title=_("Invalid URL"),
@@ -776,6 +781,9 @@ class File(Document):
 				frappe.clear_messages()
 
 	def set_is_private(self):
+		if self.is_private:
+			return
+		
 		if self.file_url:
 			self.is_private = cint(self.file_url.startswith("/private"))
 
