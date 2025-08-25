@@ -18,21 +18,21 @@ from frappe.exceptions import DoesNotExistError
 from frappe.model.document import Document
 from frappe.permissions import SYSTEM_USER_ROLE, get_doctypes_with_read
 from frappe.utils import (
-    call_hook_method,
-    cint,
-    get_files_path,
-    get_hook_method,
-    get_url,
+	call_hook_method,
+	cint,
+	get_files_path,
+	get_hook_method,
+	get_url,
 )
 from frappe.utils.file_manager import is_safe_path
 from frappe.utils.image import optimize_image, strip_exif_data
 from frappe.utils.pdf import pdf_contains_js
 
 from .exceptions import (
-    AttachmentLimitReached,
-    FileTypeNotAllowed,
-    FolderNotEmpty,
-    MaxFileSizeReachedError,
+	AttachmentLimitReached,
+	FileTypeNotAllowed,
+	FolderNotEmpty,
+	MaxFileSizeReachedError,
 )
 from .utils import *
 
@@ -52,6 +52,9 @@ FILE_ENCODING_OPTIONS = ("utf-8-sig", "utf-8", "windows-1250", "windows-1252")
 
 class File(Document):
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 03bff35b5e (chore: pre-commit)
 	# begin: auto-generated types
 	# This code is auto-generated. Do not modify anything in this block.
 
@@ -78,6 +81,10 @@ class File(Document):
 		uploaded_to_dropbox: DF.Check
 		uploaded_to_google_drive: DF.Check
 	# end: auto-generated types
+<<<<<<< HEAD
+=======
+
+>>>>>>> 03bff35b5e (chore: pre-commit)
 	no_feed_on_delete = True
 
 	def __init__(self, *args, **kwargs):
@@ -106,6 +113,12 @@ class File(Document):
 			self.name = frappe.generate_hash(length=10)
 
 	def before_insert(self):
+<<<<<<< HEAD
+=======
+		# Ensure correct formatting and type
+		self.file_url = unquote(self.file_url) if self.file_url else ""
+
+>>>>>>> 03bff35b5e (chore: pre-commit)
 		self.set_folder_name()
 		self.set_is_private()
 		self.set_file_name()
@@ -133,9 +146,12 @@ class File(Document):
 		if self.is_folder:
 			return
 
+<<<<<<< HEAD
 		# Ensure correct formatting and type
 		self.file_url = unquote(self.file_url) if self.file_url else ""
 
+=======
+>>>>>>> 03bff35b5e (chore: pre-commit)
 		self.validate_attachment_references()
 
 		# when dict is passed to get_doc for creation of new_doc, is_new returns None
@@ -146,15 +162,27 @@ class File(Document):
 		self.validate_file_path()
 		self.validate_file_url()
 		self.validate_file_on_disk()
+<<<<<<< HEAD
 		self.file_size = frappe.form_dict.file_size or self.file_size
 		self.check_content()
+=======
+
+		self.file_size = frappe.form_dict.file_size or self.file_size
+>>>>>>> 03bff35b5e (chore: pre-commit)
 
 	def validate_attachment_references(self):
 		if not self.attached_to_doctype:
 			return
 
 		if not self.attached_to_name or not isinstance(self.attached_to_name, str | int):
+<<<<<<< HEAD
 			frappe.throw(_("Attached To Name must be a string or an integer"), frappe.ValidationError)
+=======
+			frappe.throw(
+				_("Attached To Name must be a string or an integer"),
+				frappe.ValidationError,
+			)
+>>>>>>> 03bff35b5e (chore: pre-commit)
 
 		if self.attached_to_field and SPECIAL_CHAR_PATTERN.search(self.attached_to_field):
 			frappe.throw(_("The fieldname you've specified in Attached To Field is invalid"))
@@ -228,8 +256,13 @@ class File(Document):
 		if self.is_remote_file or not self.file_url:
 			return
 
+<<<<<<< HEAD
 		if not self.file_url.startswith(("/files/", "/private/files/",  "/api/method/drive.api.files.get_file_content")):
 			# Probably an invalid URL since it doesn't start with http and isn't a Drive URL either
+=======
+		if not self.file_url.startswith(("/files/", "/private/files/", "/api/method/")):
+			# Probably an invalid URL since it doesn't start with http and isn't an internal URL either
+>>>>>>> 03bff35b5e (chore: pre-commit)
 			frappe.throw(
 				_("URL must start with http:// or https://"),
 				title=_("Invalid URL"),
@@ -333,7 +366,13 @@ class File(Document):
 			if current_attachment_count >= attachment_limit:
 				frappe.throw(
 					_("Maximum Attachment Limit of {0} has been reached for {1} {2}.").format(
+<<<<<<< HEAD
 						frappe.bold(attachment_limit), self.attached_to_doctype, self.attached_to_name
+=======
+						frappe.bold(attachment_limit),
+						self.attached_to_doctype,
+						self.attached_to_name,
+>>>>>>> 03bff35b5e (chore: pre-commit)
 					),
 					exc=AttachmentLimitReached,
 					title=_("Attachment Limit Reached"),
@@ -387,11 +426,18 @@ class File(Document):
 			return
 
 		if self.file_type not in allowed_extensions.splitlines():
+<<<<<<< HEAD
 			frappe.throw(_("File type of {0} is not allowed").format(self.file_type), exc=FileTypeNotAllowed)
 
 	def check_content(self):
 		if self.file_type == "PDF" and self._content and pdf_contains_js(self._content):
 			frappe.throw(_("This PDF cannot be uploaded as it contains unsafe content."))
+=======
+			frappe.throw(
+				_("File type of {0} is not allowed").format(self.file_type),
+				exc=FileTypeNotAllowed,
+			)
+>>>>>>> 03bff35b5e (chore: pre-commit)
 
 	def validate_duplicate_entry(self):
 		if not self.flags.ignore_duplicate_entry_error and not self.is_folder:
@@ -426,7 +472,12 @@ class File(Document):
 	def set_file_name(self):
 		if not self.file_name and not self.file_url:
 			frappe.throw(
+<<<<<<< HEAD
 				_("Fields `file_name` or `file_url` must be set for File"), exc=frappe.MandatoryError
+=======
+				_("Fields `file_name` or `file_url` must be set for File"),
+				exc=frappe.MandatoryError,
+>>>>>>> 03bff35b5e (chore: pre-commit)
 			)
 		elif not self.file_name and self.file_url:
 			self.file_name = self.file_url.split("/")[-1]
@@ -575,10 +626,18 @@ class File(Document):
 	def exists_on_disk(self):
 		return os.path.exists(self.get_full_path())
 
+<<<<<<< HEAD
 	def get_content(self) -> bytes:
 		if self.is_folder:
 			frappe.throw(_("Cannot get file contents of a Folder"))
 
+=======
+	def get_content(self, encodings=None) -> bytes | str:
+		if self.is_folder:
+			frappe.throw(_("Cannot get file contents of a Folder"))
+
+		# if doc was just created, content field is already populated, return it as-is
+>>>>>>> 03bff35b5e (chore: pre-commit)
 		if self.get("content"):
 			self._content = self.content
 			if self.decode:
@@ -591,6 +650,7 @@ class File(Document):
 			self.validate_file_url()
 		file_path = self.get_full_path()
 
+<<<<<<< HEAD
 		# read the file
 		with open(file_path, mode="rb") as f:
 			self._content = f.read()
@@ -600,11 +660,31 @@ class File(Document):
 			except UnicodeDecodeError:
 				# for .png, .jpg, etc
 				pass
+=======
+		if encodings is None:
+			encodings = FILE_ENCODING_OPTIONS
+		with open(file_path, mode="rb") as f:
+			self._content = f.read()
+			# looping will not result in slowdown, as the content is usually utf-8 or utf-8-sig
+			# encoded so the first iteration will be enough most of the time
+			for encoding in encodings:
+				try:
+					# read file with proper encoding
+					self._content = self._content.decode(encoding)
+					break
+				except UnicodeDecodeError:
+					# for .png, .jpg, etc
+					continue
+>>>>>>> 03bff35b5e (chore: pre-commit)
 
 		return self._content
 
 	def get_full_path(self):
+<<<<<<< HEAD
 		"""Returns file path from given file name"""
+=======
+		"""Return file path using the set file name."""
+>>>>>>> 03bff35b5e (chore: pre-commit)
 
 		file_path = self.file_url or self.file_name
 
@@ -647,7 +727,11 @@ class File(Document):
 
 		if isinstance(self._content, str):
 			self._content = self._content.encode()
+<<<<<<< HEAD
 		self.check_content()
+=======
+
+>>>>>>> 03bff35b5e (chore: pre-commit)
 		with open(file_path, "wb+") as f:
 			f.write(self._content)
 			os.fsync(f.fileno())
@@ -704,7 +788,11 @@ class File(Document):
 			)
 
 		if duplicate_file:
+<<<<<<< HEAD
 			file_doc: "File" = frappe.get_cached_doc("File", duplicate_file.name)
+=======
+			file_doc: File = frappe.get_cached_doc("File", duplicate_file.name)
+>>>>>>> 03bff35b5e (chore: pre-commit)
 			if file_doc.exists_on_disk():
 				if self.exists_on_disk():
 					if not self.file_url:
@@ -770,7 +858,11 @@ class File(Document):
 		return has_permission(self, "read")
 
 	def get_extension(self):
+<<<<<<< HEAD
 		"""returns split filename and extension"""
+=======
+		"""Split and return filename and extension for the set `file_name`."""
+>>>>>>> 03bff35b5e (chore: pre-commit)
 		return os.path.splitext(self.file_name)
 
 	def create_attachment_record(self):
@@ -794,7 +886,11 @@ class File(Document):
 	def set_is_private(self):
 		if self.is_private:
 			return
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> 03bff35b5e (chore: pre-commit)
 		if self.file_url:
 			self.is_private = cint(self.file_url.startswith("/private"))
 
@@ -848,6 +944,7 @@ class File(Document):
 			zf.writestr(_file.file_name, _file.get_content())
 		zf.close()
 		return zip_file.getvalue()
+<<<<<<< HEAD
 =======
     # begin: auto-generated types
     # This code is auto-generated. Do not modify anything in this block.
@@ -1694,19 +1791,22 @@ class File(Document):
         zf.close()
         return zip_file.getvalue()
 >>>>>>> 6131aa63fd (fix: allow all internal urls)
+=======
+>>>>>>> 03bff35b5e (chore: pre-commit)
 
 
 def on_doctype_update():
-    frappe.db.add_index("File", ["attached_to_doctype", "attached_to_name"])
-    frappe.db.add_index("File", ["file_url(100)"])
+	frappe.db.add_index("File", ["attached_to_doctype", "attached_to_name"])
+	frappe.db.add_index("File", ["file_url(100)"])
 
 
 def has_permission(doc, ptype=None, user=None, debug=False):
-    user = user or frappe.session.user
+	user = user or frappe.session.user
 
-    if user == "Administrator":
-        return True
+	if user == "Administrator":
+		return True
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ptype == "create":
 		return frappe.has_permission("File", "create", user=user, debug=debug)
@@ -1717,40 +1817,44 @@ def has_permission(doc, ptype=None, user=None, debug=False):
     if not doc.is_private and ptype in ("read", "select"):
         return True
 >>>>>>> 6131aa63fd (fix: allow all internal urls)
+=======
+	if not doc.is_private and ptype in ("read", "select"):
+		return True
+>>>>>>> 03bff35b5e (chore: pre-commit)
 
-    if user != "Guest" and doc.owner == user:
-        return True
+	if user != "Guest" and doc.owner == user:
+		return True
 
-    if doc.attached_to_doctype and doc.attached_to_name:
-        attached_to_doctype = doc.attached_to_doctype
-        attached_to_name = doc.attached_to_name
+	if doc.attached_to_doctype and doc.attached_to_name:
+		attached_to_doctype = doc.attached_to_doctype
+		attached_to_name = doc.attached_to_name
 
-        try:
-            ref_doc = frappe.get_doc(attached_to_doctype, attached_to_name)
-        except ModuleNotFoundError:
-            return False
-        except frappe.DoesNotExistError:
-            frappe.clear_last_message()
-            return False
+		try:
+			ref_doc = frappe.get_doc(attached_to_doctype, attached_to_name)
+		except ModuleNotFoundError:
+			return False
+		except frappe.DoesNotExistError:
+			frappe.clear_last_message()
+			return False
 
-        if ptype in ["write", "create", "delete"]:
-            return ref_doc.has_permission("write", debug=debug, user=user)
-        else:
-            return ref_doc.has_permission("read", debug=debug, user=user)
+		if ptype in ["write", "create", "delete"]:
+			return ref_doc.has_permission("write", debug=debug, user=user)
+		else:
+			return ref_doc.has_permission("read", debug=debug, user=user)
 
-    return False
+	return False
 
 
 def get_permission_query_conditions(user: str | None = None) -> str:
-    user = user or frappe.session.user
-    if user == "Administrator":
-        return ""
+	user = user or frappe.session.user
+	if user == "Administrator":
+		return ""
 
-    if SYSTEM_USER_ROLE not in frappe.get_roles(user):
-        return f""" `tabFile`.`owner` = {frappe.db.escape(user)} """
+	if SYSTEM_USER_ROLE not in frappe.get_roles(user):
+		return f""" `tabFile`.`owner` = {frappe.db.escape(user)} """
 
-    readable_doctypes = ", ".join(repr(dt) for dt in get_doctypes_with_read())
-    return f"""
+	readable_doctypes = ", ".join(repr(dt) for dt in get_doctypes_with_read())
+	return f"""
 		(`tabFile`.`is_private` = 0)
 		OR (`tabFile`.`attached_to_doctype` IS NULL AND `tabFile`.`owner` = {frappe.db.escape(user)})
 		OR (`tabFile`.`attached_to_doctype` IN ({readable_doctypes}))
