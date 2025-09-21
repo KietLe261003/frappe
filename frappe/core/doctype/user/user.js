@@ -37,6 +37,7 @@ frappe.ui.form.on("User", {
 		}
 	},
 
+<<<<<<< HEAD
 	role_profile_name: function (frm) {
 		if (frm.doc.role_profile_name) {
 			frappe.call({
@@ -56,6 +57,8 @@ frappe.ui.form.on("User", {
 		}
 	},
 
+=======
+>>>>>>> 42c104fa76 (fix: mange specific roles without saving the user doc)
 	module_profile: function (frm) {
 		if (frm.doc.module_profile) {
 			frappe.call({
@@ -417,6 +420,26 @@ frappe.ui.form.on("User Email", {
 				frm.refresh_field("user_emails", cdn, "used_oauth");
 			}
 		);
+	},
+});
+
+frappe.ui.form.on("User Role Profile", {
+	role_profiles_add: function (frm) {
+		if (frm.doc.role_profiles.length > 0) {
+			frm.roles_editor.disable = 1;
+			frm.call("populate_role_profile_roles").then(() => {
+				frm.roles_editor.show();
+			});
+			$(".deselect-all, .select-all").prop("disabled", true);
+		}
+	},
+	role_profiles_remove: function (frm) {
+		if (frm.doc.role_profiles.length == 0) {
+			console.log(frm.doc.role_profiles.length == 0);
+			frm.roles_editor.disable = 0;
+			frm.roles_editor.show();
+			$(".deselect-all, .select-all").prop("disabled", false);
+		}
 	},
 });
 
