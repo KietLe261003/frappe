@@ -37,28 +37,6 @@ frappe.ui.form.on("User", {
 		}
 	},
 
-<<<<<<< HEAD
-	role_profile_name: function (frm) {
-		if (frm.doc.role_profile_name) {
-			frappe.call({
-				method: "frappe.core.doctype.user.user.get_role_profile",
-				args: {
-					role_profile: frm.doc.role_profile_name,
-				},
-				callback: function (data) {
-					frm.set_value("roles", []);
-					$.each(data.message || [], function (i, v) {
-						var d = frm.add_child("roles");
-						d.role = v.role;
-					});
-					frm.roles_editor.show();
-				},
-			});
-		}
-	},
-
-=======
->>>>>>> 42c104fa76 (fix: mange specific roles without saving the user doc)
 	module_profile: function (frm) {
 		if (frm.doc.module_profile) {
 			frappe.call({
